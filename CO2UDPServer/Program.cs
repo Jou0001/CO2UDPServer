@@ -39,7 +39,7 @@ class Program
 					Console.WriteLine(data);
 				}
 
-				if (int.TryParse(message, out int co2Value) && co2Value > 1000)
+				if (int.TryParse(message, out int co2Value) && co2Value >= 1000)
 				{
 					Console.WriteLine("ALERT: Critical CO2 level detected!");
 				}
