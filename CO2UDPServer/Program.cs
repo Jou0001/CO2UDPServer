@@ -1,41 +1,50 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Collections.Generic;
 
-Console.WriteLine("CO2 UDP Server");
-
-using (UdpClient socket = new UdpClient(5005))
+class Program
 {
-    IPEndPoint clientEndPoint = null;
+	// Liste til at gemme CO2-data
+	private static List<string> co2Data = new List<string>();
 
-    while (true)
-    {
-        // Modtag data fra klienten
-        byte[] received = socket.Receive(ref clientEndPoint);
-        string receivedMessage = Encoding.UTF8.GetString(received);
+	static void Main(string[] args)
+	{
+		Console.WriteLine("Starting UDP server...");
 
-        Console.WriteLine($"Received: {receivedMessage}");
+		using (UdpClient socket = new UdpClient())
+		{
+			// Bind serveren til port 5005
+			socket.Client.Bind(new IPEndPoint(IPAddress.Any, 5005));
+			Console.WriteLine("Server is listening on port 5005...");
 
-        // Eksempel: Parse ppm fra beskeden
-        if (receivedMessage.StartsWith("CO2 Level:"))
-        {
-            string ppmString = receivedMessage.Replace("CO2 Level:", "").Replace("ppm", "").Trim();
-            if (int.TryParse(ppmString, out int co2Level))
-            {
-                // Lidt i tvivl hvilken kode skal være her,
+			while (true)
+			{
+				// Modtag data fra klienten
+				IPEndPoint clientEndpoint = null;
+				byte[] receivedData = socket.Receive(ref clientEndpoint);
 
+				// Konverter data til string
+				string message = Encoding.UTF8.GetString(receivedData);
 
-            }
-        }
+				// Gem data i listen og udskriv
+				co2Data.Add(message);
+				Console.WriteLine($"Received CO2 data: {message} ppm from {clientEndpoint.Address}:{clientEndpoint.Port}");
 
-        // Tjek for stopbesked
-        if (receivedMessage.ToLower().Trim() == "stop")
-        {
-            Console.WriteLine("Stopping server...");
-            break;
-        }
-    }
+				// Vis alle gemte målinger
+				Console.WriteLine("Stored measurements:");
+				foreach (var data in co2Data)
+				{
+					Console.WriteLine(data);
+				}
+
+				if (int.TryParse(message, out int co2Value) && co2Value > 1000)
+				{
+					Console.WriteLine("ALERT: Critical CO2 level detected!");
+				}
+
+			}
+		}
+	}
 }
-
