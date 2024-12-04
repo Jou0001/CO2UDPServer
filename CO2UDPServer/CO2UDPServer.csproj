@@ -7,4 +7,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CO2DatabaseLib">
+      <HintPath>..\..\..\CO2DatabaseLib\CO2DatabaseLib\bin\Debug\net8.0\CO2DatabaseLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
