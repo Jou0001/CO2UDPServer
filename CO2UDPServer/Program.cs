@@ -34,7 +34,7 @@ class Program
 
 					if (int.TryParse(splitMessage[0], out int sensorId) && int.TryParse(splitMessage[1], out int co2Value))
 					{
-						Console.WriteLine($"Parsed CO2 value: {co2Value} ppm");
+						Console.WriteLine($"Parsed SensorId: {sensorId} & CO2 value: {co2Value} ppm");
 
 
 						var measurement = new Measurement
