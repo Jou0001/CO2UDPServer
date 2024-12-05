@@ -30,15 +30,16 @@ class Program
 					string message = Encoding.UTF8.GetString(receiveData);
 					Console.WriteLine($"Received message: {message} from {clientEndpoint.Address}:{clientEndpoint.Port}");
 
+					string[] splitMessage = message.Split(' ');
 
-					if (int.TryParse(message, out int co2Value))
+					if (int.TryParse(splitMessage[0], out int sensorId) && int.TryParse(splitMessage[1], out int co2Value))
 					{
 						Console.WriteLine($"Parsed CO2 value: {co2Value} ppm");
 
 
 						var measurement = new Measurement
 						{
-							SensorId = 1,
+							SensorId = sensorId,
 							MeasurementTime = DateTime.Now,
 							MeasurementValue = co2Value
 						};
