@@ -2,48 +2,61 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Collections.Generic;
+using CO2DatabaseLib;
+using CO2DatabaseLib.Models;
 
 class Program
 {
-	// Liste til at gemme CO2-data
-	private static List<string> co2Data = new List<string>();
-
 	static void Main(string[] args)
 	{
-		Console.WriteLine("Starting UDP server...");
+		Console.WriteLine("Starting the UDP server...");
 
-		using (UdpClient socket = new UdpClient())
+		using (UdpClient socket = new UdpClient(5005)) 
 		{
-			// Bind serveren til port 5005
-			socket.Client.Bind(new IPEndPoint(IPAddress.Any, 5005));
-			Console.WriteLine("Server is listening on port 5005...");
+			socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+			Console.WriteLine("Listening on port 5005...");
+
+
+			var db = new DBConnection();
 
 			while (true)
 			{
-				// Modtag data fra klienten
-				IPEndPoint clientEndpoint = null;
-				byte[] receivedData = socket.Receive(ref clientEndpoint);
-
-				// Konverter data til string
-				string message = Encoding.UTF8.GetString(receivedData);
-
-				// Gem data i listen og udskriv
-				co2Data.Add(message);
-				Console.WriteLine($"Received CO2 data: {message} ppm from {clientEndpoint.Address}:{clientEndpoint.Port}");
-
-				// Vis alle gemte målinger
-				Console.WriteLine("Stored measurements:");
-				foreach (var data in co2Data)
+				try
 				{
-					Console.WriteLine(data);
-				}
+					IPEndPoint clientEndpoint = null;
+					byte[] receiveData = socket.Receive(ref clientEndpoint);
 
-				if (int.TryParse(message, out int co2Value) && co2Value >= 1000)
+
+					string message = Encoding.UTF8.GetString(receiveData);
+					Console.WriteLine($"Received message: {message} from {clientEndpoint.Address}:{clientEndpoint.Port}");
+
+
+					if (int.TryParse(message, out int co2Value))
+					{
+						Console.WriteLine($"Parsed CO2 value: {co2Value} ppm");
+
+
+						var measurement = new Measurement
+						{
+							SensorId = 1,
+							MeasurementTime = DateTime.Now,
+							MeasurementValue = co2Value
+						};
+
+						db._dbContext.Measurements.Add(measurement);
+						db._dbContext.SaveChanges();
+
+						Console.WriteLine("Measurement saved to database.");
+					}
+					else
+					{
+						Console.WriteLine($"Invalid data received: {message}");
+					}
+				}
+				catch (Exception ex)
 				{
-					Console.WriteLine("ALERT: Critical CO2 level detected!");
+					Console.WriteLine($"An error occurred: {ex.Message}");
 				}
-
 			}
 		}
 	}
