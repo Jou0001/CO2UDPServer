@@ -80,13 +80,33 @@ class Program
 			var client = new SendGridClient(apiKey);
 			var from = new EmailAddress("saddam.hussein11@outlook.dk", "CO2Check");
 			var subject = "Critical CO2 Level Alert!";
-			var to = new EmailAddress("modtagerens.email@domain.com", "Modtager Navn");
-			var plainTextContent = $"Alert! Sensor {sensorId} detected a CO2 level of {co2Value} ppm, which is above the critical threshold.";
-			var htmlContent = $"<strong>Alert!</strong> Sensor {sensorId} detected a CO2 level of {co2Value} ppm.";
-			var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
 
-			var response = await client.SendEmailAsync(msg);
-			Console.WriteLine($"Email sent! Status Code: {response.StatusCode}");
+			var to1 = new EmailAddress("armaniroman1995@gmail.com", "Roman Ghazi");
+			var to2 = new EmailAddress("drageon@live.dk", "Frederik Nicolajsen");
+			var to3 = new EmailAddress("jeppe.jeppsson@live.dk", "Jeppe Jeppson");
+			var to4 = new EmailAddress("maagaardlarsen@gmail.com", "Mads Larsen");
+			var to5 = new EmailAddress("joutiar - jousef22@outlook.dk", "Joutiar Jousef");
+			var to6 = new EmailAddress("Kodo11.amin@gmail.com", "Kodo Amin");
+
+			var plainTextContent = $"Alert! Sensor {sensorId} detected a CO2 level of {co2Value} ppm, which is above the critical threshold.";
+
+			var htmlContent = $"<strong>Alert!</strong> Sensor {sensorId} detected a CO2 level of {co2Value} ppm.";
+
+			var msg1 = MailHelper.CreateSingleEmail(from, to1, subject, plainTextContent, htmlContent);
+			var msg2 = MailHelper.CreateSingleEmail(from, to2, subject, plainTextContent, htmlContent);
+			var msg3 = MailHelper.CreateSingleEmail(from, to3, subject, plainTextContent, htmlContent);
+			var msg4 = MailHelper.CreateSingleEmail(from, to4, subject, plainTextContent, htmlContent);
+			var msg5 = MailHelper.CreateSingleEmail(from, to5, subject, plainTextContent, htmlContent);
+			var msg6 = MailHelper.CreateSingleEmail(from, to6, subject, plainTextContent, htmlContent);
+
+			var response1 = await client.SendEmailAsync(msg1);
+			var response2 = await client.SendEmailAsync(msg2);
+			var response3 = await client.SendEmailAsync(msg3);
+			var response4 = await client.SendEmailAsync(msg4);
+			var response5 = await client.SendEmailAsync(msg5);
+			var response6 = await client.SendEmailAsync(msg6);
+
+			Console.WriteLine($"Succes! Status Code: {response1.StatusCode}");
 		}
 		catch (Exception ex)
 		{
