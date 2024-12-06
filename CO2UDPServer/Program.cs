@@ -78,7 +78,7 @@ class Program
 		{
 			var apiKey = "din_sendgrid_api_key";
 			var client = new SendGridClient(apiKey);
-			var from = new EmailAddress("din.email@domain.com", "CO2 Monitoring System");
+			var from = new EmailAddress("saddam.hussein11@outlook.dk", "CO2Check");
 			var subject = "Critical CO2 Level Alert!";
 			var to = new EmailAddress("modtagerens.email@domain.com", "Modtager Navn");
 			var plainTextContent = $"Alert! Sensor {sensorId} detected a CO2 level of {co2Value} ppm, which is above the critical threshold.";
